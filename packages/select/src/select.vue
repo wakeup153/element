@@ -262,6 +262,10 @@
         type: String,
         default: 'off'
       },
+      dropdownWidth: {
+        type: [String, Number],
+        default: ''
+      },
       /** @Deprecated in next major version */
       autoComplete: {
         type: String,

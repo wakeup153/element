@@ -2,7 +2,7 @@
   <div
     class="el-select-dropdown el-popper"
     :class="[{ 'is-multiple': $parent.multiple }, popperClass]"
-    :style="{ minWidth: minWidth }">
+    :style="{ minWidth: minWidth, width: width }">
     <slot></slot>
   </div>
 </template>
@@ -46,7 +46,8 @@
 
     data() {
       return {
-        minWidth: ''
+        minWidth: '',
+        width: ''
       };
     },
 
@@ -59,6 +60,9 @@
     watch: {
       '$parent.inputWidth'() {
         this.minWidth = this.$parent.$el.getBoundingClientRect().width + 'px';
+      },
+      '$parent.dropdownWidth'() {
+        this.resizeWidth();
       }
     },
 
@@ -69,6 +73,22 @@
         if (this.$parent.visible) this.updatePopper();
       });
       this.$on('destroyPopper', this.destroyPopper);
+      this.resizeWidth();
+    },
+
+    methods: {
+      resizeWidth() {
+        const width = this.$parent.dropdownWidth;
+        const minWidth = this.$parent.$el.getBoundingClientRect().width;
+        if (width === 'auto') {
+          this.width = minWidth + 'px';
+          return;
+        }
+        const dropdownWidth = Number.parseFloat(width);
+        if (dropdownWidth > minWidth) {
+          this.width = dropdownWidth + 'px';
+        }
+      }
     }
   };
 </script>
