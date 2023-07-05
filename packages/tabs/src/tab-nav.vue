@@ -1,6 +1,7 @@
 <script>
   import TabBar from './tab-bar';
   import { addResizeListener, removeResizeListener } from 'element-ui/src/utils/resize-event';
+  import Sortable from 'element-ui/src/utils/Sortable.js';
 
   function noop() {}
   const firstUpperCase = str => {
@@ -20,6 +21,7 @@
       panes: Array,
       currentName: String,
       editable: Boolean,
+      sortable: Boolean,
       onTabClick: {
         type: Function,
         default: noop
@@ -52,7 +54,6 @@
         return ['top', 'bottom'].indexOf(this.rootTabs.tabPosition) !== -1 ? 'width' : 'height';
       }
     },
-
     methods: {
       scrollPrev() {
         const containerSize = this.$refs.navScroll[`offset${firstUpperCase(this.sizeName)}`];
@@ -118,6 +119,7 @@
         const navSize = this.$refs.nav[`offset${firstUpperCase(sizeName)}`];
         const containerSize = this.$refs.navScroll[`offset${firstUpperCase(sizeName)}`];
         const currentOffset = this.navOffset;
+        this.initSortable();
 
         if (containerSize < navSize) {
           const currentOffset = this.navOffset;
@@ -186,6 +188,18 @@
         setTimeout(() => {
           this.focusable = true;
         }, 50);
+      },
+      initSortable() {
+        const { sortable } = this;
+        if (sortable) {
+          this.$nextTick(() => {
+            const nav = this.$refs.nav;
+            const tabs = this.$refs.tabs;
+            tabs.length && new Sortable(nav, {});
+            // this.sortTableIns = Object.freeze(sortTable);
+            // console.log('sort', nav, tabs, Sortable, this.$refs.tabs, sortTable);
+          });
+        }
       }
     },
 
@@ -279,11 +293,11 @@
       document.addEventListener('visibilitychange', this.visibilityChangeHandler);
       window.addEventListener('blur', this.windowBlurHandler);
       window.addEventListener('focus', this.windowFocusHandler);
+      this.initSortable();
       setTimeout(() => {
         this.scrollToActiveTab();
       }, 0);
     },
-
     beforeDestroy() {
       if (this.$el && this.update) removeResizeListener(this.$el, this.update);
       document.removeEventListener('visibilitychange', this.visibilityChangeHandler);

@@ -13,6 +13,7 @@
       activeName: String,
       closable: Boolean,
       addable: Boolean,
+      sortable: Boolean,
       value: {},
       editable: Boolean,
       tabPosition: {
@@ -119,6 +120,7 @@
         panes,
         editable,
         addable,
+        sortable,
         tabPosition,
         stretch
       } = this;
@@ -142,6 +144,7 @@
           onTabClick: handleTabClick,
           onTabRemove: handleTabRemove,
           editable,
+          sortable,
           type,
           panes,
           stretch

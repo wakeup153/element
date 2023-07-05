@@ -273,12 +273,78 @@
 ```
 :::
 
+
+### 可拖动排序标签页
+
+:::demo
+```html
+<el-tabs v-model="editableTabsValue" type="card" sortable>
+  <el-tab-pane
+    v-for="(item, index) in editableTabs"
+    :key="item.name"
+    :label="item.title"
+    :name="item.name"
+  >
+    {{item.content}}
+  </el-tab-pane>
+</el-tabs>
+<script>
+  export default {
+    data() {
+      return {
+        editableTabsValue: '2',
+        editableTabs: [{
+          title: 'Tab 1',
+          name: '1',
+          content: 'Tab 1 content'
+        }, {
+          title: 'Tab 2',
+          name: '2',
+          content: 'Tab 2 content'
+        }, {
+          title: 'Tab 3',
+          name: '3',
+          content: 'Tab 3 content'
+        },
+        {
+          title: 'Tab 4',
+          name: '4',
+          content: 'Tab 4 content'
+        }],
+        tabIndex: 2
+      }
+    },
+    methods: {
+      removeTab(targetName) {
+        let tabs = this.editableTabs;
+        let activeName = this.editableTabsValue;
+        if (activeName === targetName) {
+          tabs.forEach((tab, index) => {
+            if (tab.name === targetName) {
+              let nextTab = tabs[index + 1] || tabs[index - 1];
+              if (nextTab) {
+                activeName = nextTab.name;
+              }
+            }
+          });
+        }
+        
+        this.editableTabsValue = activeName;
+        this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+      }
+    }
+  }
+</script>
+```
+:::
+
 ### Tabs Attributes
 | 参数       | 说明     | 类型      | 可选值       | 默认值   |
 |---------- |-------- |---------- |-------------  |-------- |
 | value / v-model  | 绑定值，选中选项卡的 name  | string   |  —  |  第一个选项卡的 name |
 | type     | 风格类型   | string   | card/border-card  |     —    |
 | closable  | 标签是否可关闭   | boolean   | — |  false  |
+| sortable  | 标签是可以拖动排序   | boolean   | — |  false  |
 | addable  | 标签是否可增加   | boolean   | — |  false  |
 | editable  | 标签是否同时可增加和关闭   | boolean   | — |  false  |
 | tab-position  | 选项卡所在位置 | string   |  top/right/bottom/left  |  top |
